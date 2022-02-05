@@ -1,4 +1,4 @@
-#该程序用于将包含振动信号的mat文件数据集转化为二位图片并分类存储
+#该程序用于将包含振动信号的mat文件数据集提取,20800个样本，四类故障，每个样本包含2048个数据点
 import numpy
 import scipy.io as scio
 import matplotlib.pyplot as plt
