@@ -1,4 +1,4 @@
-#该程序用于将包含振动信号的mat文件数据集转化为二位图片并分类存储
+#该程序用于将包含振动信号的mat文件数据集读取切割并存储
 import numpy
 import scipy.io as scio
 import matplotlib.pyplot as plt
