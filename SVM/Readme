@@ -18,4 +18,4 @@ predict.py: 该程序用于读入已训练好的模型来对给定数据进行�
 
 tsne.py: 用于输出SVM模型的t-SNE图，来判断模型的特征区分能力。
 
-程序运行顺序： get_Images.py --> label_generate.py --> train_test_split.py --> tfrecord_generate.py --> SVM_net.py --> (predict.py | tsne.py)
+程序运行顺序： get_segments.py --> label_generate.py --> train_test_split.py --> tfrecord_generate.py --> SVM_net.py --> (predict.py | tsne.py)
