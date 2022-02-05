@@ -1,6 +1,6 @@
 #lenet5的模型框架结构
 #coding: utf-8
-import greyImage_generate
+import tfrecord_generate
 from keras.layers import *
 from keras.models import *
 import matplotlib.pyplot as plt
@@ -10,7 +10,7 @@ from model_profiler import model_profiler
 from keras_flops import get_flops
 
 
-train_images, train_labels,validation_images, validation_labels = greyImage_generate.get_tfrecord()
+train_images, train_labels,validation_images, validation_labels = tfrecord_generate.get_tfrecord()
 #注意：在从tfrecord读取过程中，已完成了对图片的预处理工作，所以这里不用再进行额外处理
 train_images = train_images.reshape((8000,64,64,1))
 validation_images = validation_images.reshape((1600,64,64,1))
