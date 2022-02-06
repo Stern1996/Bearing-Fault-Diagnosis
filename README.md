@@ -1,4 +1,20 @@
 # Bearing-Fault-Diagnosis
+2月6日更新：
+
+轴承故障检测所使用数据集来源于CWRU轴承数据中心。
+
+CWRU数据集包含特征有：3种故障尺寸，4种工作负载，3种故障类型（其中轴承外圈故障还包含三种不同故障位置）
+
+在本资源库中，所有模型识别标签种类均为4。故障尺寸与工作负载并未作为划分不同识别标签的指标。
+
+06, Feb.
+
+The datasets used for bearing failure detection are from the CWRU Bearing Data Center.
+
+The CWRU datasets contain features such as: 3 fault diameter, 4 motor load, 3 fault types (with outer race faults also containing three different fault positions)
+
+In this repository, the number of labels for fault diagnosis are the same -- 4. Fault diameter and motor load are not used as criteria to classify the different labels.
+
 2月3日更新：
 
 在这个资源库中，列出了一些典型的机器学习模型。这些模型用于轴承故障诊断。所有模型的结构与参数均来源于对已有相关论文的复现。
