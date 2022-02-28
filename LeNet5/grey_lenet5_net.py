@@ -1,6 +1,6 @@
 #lenet5的模型框架结构
 #coding: utf-8
-import tfrecord_generate
+import greyImage_generate
 from keras.layers import *
 from keras.models import *
 import matplotlib.pyplot as plt
@@ -8,12 +8,11 @@ from PIL import Image
 from tensorflow.keras.optimizers import Adam
 from model_profiler import model_profiler
 from keras_flops import get_flops
+import h5_generate
 
 
-train_images, train_labels,validation_images, validation_labels = tfrecord_generate.get_tfrecord()
-#注意：在从tfrecord读取过程中，已完成了对图片的预处理工作，所以这里不用再进行额外处理
-train_images = train_images.reshape((8000,64,64,1))
-validation_images = validation_images.reshape((1600,64,64,1))
+train_images, train_labels,validation_images, validation_labels =h5_generate.get_dataset()
+
 
 #搭建模型
 model = Sequential()
@@ -45,7 +44,7 @@ model.add(Dense(units=2560,activation='relu'))
 #model.add(Dense(units=768,activation='relu'))
 #Layer 6
 #output Layer
-model.add(Dense(units=4,activation='softmax'))
+model.add(Dense(units=10,activation='softmax'))
 model.summary()
 adam = Adam(learning_rate=0.0001,beta_1=0.9, beta_2=0.999, epsilon=1e-08,decay=0.0,amsgrad=False)
 model.compile(optimizer=adam,loss='categorical_crossentropy',metrics=['accuracy'])
@@ -66,7 +65,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(loc='lower right')
-fig.savefig('LeNet5'+"8000_nosie"+'acc.png')
+fig.savefig('LeNet5'+"24000"+'acc.png')
 fig = plt.figure()
 plt.plot(history.history['loss'],label='training loss')
 plt.plot(history.history['val_loss'], label='val loss')
@@ -74,4 +73,4 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(loc='upper right')
-fig.savefig('LeNet5'+"8000_noise"+'loss.png')
+fig.savefig('LeNet5'+"24000"+'loss.png')

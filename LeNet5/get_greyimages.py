@@ -6,17 +6,23 @@ import numpy as np
 from PIL import Image
 import random
 import os
-import add_gaussnoise
 
-no_datapath = "E:\\CWRU数据集\\STFT\\NO_noise5"
-ba_datapath = "E:\\CWRU数据集\\STFT\\BA_noise5"
-ir_datapath = "E:\\CWRU数据集\\STFT\\IR_noise5"
-or_datapath = "E:\\CWRU数据集\\STFT\\OR_noise5"
+no_datapath = "E:\\CWRU数据集\\STFT\\type10\\NO"
+ba7_datapath = "E:\\CWRU数据集\\STFT\\type10\\BA7"
+ba14_datapath = "E:\\CWRU数据集\\STFT\\type10\\BA14"
+ba21_datapath = "E:\\CWRU数据集\\STFT\\type10\\BA21"
+ir7_datapath = "E:\\CWRU数据集\\STFT\\type10\\IR7"
+ir14_datapath = "E:\\CWRU数据集\\STFT\\type10\\IR14"
+ir21_datapath = "E:\\CWRU数据集\\STFT\\type10\\IR21"
+or7_datapath = "E:\\CWRU数据集\\STFT\\type10\\OR7"
+or14_datapath = "E:\\CWRU数据集\\STFT\\type10\\OR14"
+or21_datapath = "E:\\CWRU数据集\\STFT\\type10\\OR21"
 
 def DataAcquisition(DirPath):
   files = os.listdir(DirPath)
   # 提取所有该目录数据并整合
   all_data = []
+  D_data = []
   for file in files:
     data = scio.loadmat(DirPath + "\\" + file)
     num = file.strip(".mat")
@@ -30,53 +36,35 @@ def DataAcquisition(DirPath):
     #data = add_gaussnoise.add_noise(data)
     data = list(data)
     all_data.append(data)
-  D_data = []
   for i in all_data:
     D_data += i
+
   #将添加噪音后的一维数据点分割抽取转化为灰度图
   flag_list = random.sample(list(range(0,(len(D_data)-1-64*64))),2400)   #randomly selected 2400 image samples from the data
   image_list = [] # create a list to store the sampling images
-  image = numpy.zeros((64,64))
   for i in range(2400):
     segment = D_data[flag_list[i]:(flag_list[i]+64*64)]
-    for x in range(64):
-      for y in range(64):
-        image[x,y] = round((segment[x*64+y]-min(segment))/(max(segment)-min(segment))*255) #translate the data to the number in 0-255 to get gray-image
+    segment = np.asarray(segment)
+    segment = (segment-min(segment))/(max(segment)-min(segment))*255
+    image = segment.reshape((64,64))
     image_list.append(image)
   return image_list
 
-# dia_list = ["7","14","21"]
-# po_list = ["i","b","o"]
-# load_list = ["0","1","2","3"]
-# for x in load_list:
-#   for y in dia_list:
-#     for z in po_list:
-#       dirs = x+"/"+y+"/"+z
-#       if not os.path.exists(dirs):
-#         os.makedirs(dirs)
-#       images = DataAcquisition("./dataset/"+(x+y+z)+".mat")
-#       for n in range(len(images)):
-#         im = Image.fromarray(images[n])
-#         im = im.convert("L")
-#         im.save((dirs+"/"+(x+y+z)+"_"+str(n)+".png"))
-
-# for m in load_list:
-#   dirs = m
-#   if not os.path.exists(dirs):
-#     os.makedirs(dirs)
-#   no_images = DataAcquisition("./dataset/"+m+"no.mat")
-#   for w in range(len(no_images)):
-#     im = Image.fromarray(no_images[w])
-#     im = im.convert("L")
-#     im.save((dirs+"/"+(m+"no"+"_"+str(w)+".png")))
 
 
-if not os.path.exists("or_noise5"):
-    os.makedirs("or_noise5")
-or_images = DataAcquisition(or_datapath)
+if not os.path.exists("OR21"):
+    os.makedirs("OR21")
+or21_images = DataAcquisition(or21_datapath)
+or21_images = numpy.asarray(or21_images)
+for i in range(2400):
+  name = "./OR21"+"/"+("or21"+"_"+str(i))+".npy"
+  with open(name,'wb') as f:
+    np.save(f,or21_images[i])
+'''
 for w in list(range(2400)):
     n = 0
-    im = Image.fromarray(or_images[n])
+    im = Image.fromarray(or21_images[n])
     n += 1
     im = im.convert("L")
-    im.save(("./or_noise5"+"/"+("or"+"_"+str(w)+".png")))
+    im.save(("./OR21"+"/"+("or21"+"_"+str(w)+".png")))
+'''

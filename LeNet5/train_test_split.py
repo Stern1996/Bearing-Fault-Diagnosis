@@ -1,12 +1,12 @@
-#该程序用于按照label.txt随机划分一定比例训练集与测试集，并将划分好的数据分别存入对应文件夹下，此处选取8000张训练集，1600张图片作为测试集
+#该程序用于按照label.txt随机划分一定比例训练集与测试集，并将划分好的数据分别存入对应文件夹下，此处选取20000张训练集，4000张图片作为测试集
 import os
 import random
-from PIL import Image
+import numpy as np
 
 '''
 f=open("label.txt")
 all_lines=f.readlines()
-test=random.sample(all_lines,1600)
+test=random.sample(all_lines,4000)
 all_lines=set(all_lines)
 test=set(test)
 train=all_lines-test
@@ -25,10 +25,14 @@ test_path = "C:\\Users\\Administrator\\PycharmProjects\\DA\\test_dataset\\"
 with open("ead_train.txt","r") as f:
     trainfile_list = f.readlines()
     for name in trainfile_list:
-        i = Image.open((Images_path+name[0:-3]))
-        i.save((train_path+name[0:-3]))
+        i = np.load((Images_path+name[0:-3]))
+        with open(train_path+name[0:-3],'wb') as f:
+            np.save(f,i)
 with open("ead_test.txt","r") as f:
     trainfile_list = f.readlines()
     for name in trainfile_list:
-        i = Image.open((Images_path+name[0:-3]))
-        i.save((test_path+name[0:-3]))
+        i = np.load((Images_path + name[0:-3]))
+        with open(test_path+name[0:-3], 'wb') as f:
+            np.save(f, i)
+
+
