@@ -4,10 +4,11 @@
 
 预设每个mat文件采样50个样本，每个样本含有2048个数据点，不对原始数据做处理，直接用于SVM进行模型训练和分类
 
-使用：1.将用于模型训练的mat文件放入dataset文件夹（mat文件可自行从CWRU官网下载轴承振动数据）
+使用：
+1.将用于模型训练的mat文件放入dataset文件夹（mat文件可自行从CWRU官网下载轴承振动数据）
  
-      2.运行dataset_generate.py，生成模型训练数据集和对应标签，存放于data文件夹下
+2.运行dataset_generate.py，生成模型训练数据集和对应标签，存放于data文件夹下
       
-      3.运行SVM_net.py，加载数据集并随即划分训练和测试集，训练模型并保存为svm_4.pkl
+3.运行SVM_net.py，加载数据集并随即划分训练和测试集，训练模型并保存为svm_4.pkl
       
-      4.如需使用模型来进行预测，可调用SVM_net.py中model_predict函数，传入测试数据即可，测试数据为ndarray,shape为（样本数x单样本数据点数），如（5x2048）
+4.如需使用模型来进行预测，可调用SVM_net.py中model_predict函数，传入测试数据即可，测试数据为ndarray,shape为（样本数x单样本数据点数），如（5x2048）
