@@ -1,17 +1,26 @@
-#lenet5的模型框架结构
+#lenet5的模型框架结构,keras搭建
 #coding: utf-8
+from sklearn.model_selection import train_test_split
+
 import greyImage_generate
 from keras.layers import *
 from keras.models import *
 import matplotlib.pyplot as plt
-from PIL import Image
+import numpy as np
 from tensorflow.keras.optimizers import Adam
 from model_profiler import model_profiler
 from keras_flops import get_flops
-import h5_generate
+from sklearn.preprocessing import OneHotEncoder
 
 
-train_images, train_labels,validation_images, validation_labels =h5_generate.get_dataset()
+# 每个样本为（64，64）
+datasets, labels = np.load('./data/database.npy'), np.load('./data/labels.npy')
+#标签集one-hot编码,此时labels为（样本数x4）
+enc = OneHotEncoder()
+enc.fit(labels)
+labels = enc.transform(labels).toarray()
+# 数据集划分
+X_train, X_test, y_train, y_test = train_test_split(datasets, labels, test_size=0.2, random_state=0)
 
 
 #搭建模型
@@ -43,18 +52,18 @@ model.add(Flatten())
 model.add(Dense(units=2560,activation='relu'))
 #model.add(Dense(units=768,activation='relu'))
 #Layer 6
-#output Layer
-model.add(Dense(units=10,activation='softmax'))
+#output Layer,标签为4类，所以units设定为4
+model.add(Dense(units=4,activation='softmax'))
 model.summary()
-adam = Adam(learning_rate=0.0001,beta_1=0.9, beta_2=0.999, epsilon=1e-08,decay=0.0,amsgrad=False)
+adam = Adam(learning_rate=0.00001,beta_1=0.9, beta_2=0.999, epsilon=1e-08,decay=0.0,amsgrad=False)
 model.compile(optimizer=adam,loss='categorical_crossentropy',metrics=['accuracy'])
 
-flops = get_flops(model,batch_size=32)
+flops = get_flops(model,batch_size=16)
 flops = flops/2
 print(f"FLOPS: {flops / 10 ** 9:.03} G")
 
-history = model.fit(train_images,train_labels,epochs=10,batch_size=32,validation_split=0.2)
-model.evaluate(validation_images,validation_labels)
+history = model.fit(X_train,y_train,epochs=160,batch_size=16,validation_split=0.2)
+model.evaluate(X_test,y_test)
 model.save('grey.h5')
 
 #训练过程可视化
@@ -65,7 +74,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(loc='lower right')
-fig.savefig('LeNet5'+"24000"+'acc.png')
+fig.savefig('LeNet5_'+'acc.png')
 fig = plt.figure()
 plt.plot(history.history['loss'],label='training loss')
 plt.plot(history.history['val_loss'], label='val loss')
@@ -73,4 +82,4 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(loc='upper right')
-fig.savefig('LeNet5'+"24000"+'loss.png')
+fig.savefig('LeNet5_'+'loss.png')
