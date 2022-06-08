@@ -1,20 +1,27 @@
 #lenet5的模型框架结构
 #coding: utf-8
 
-import greyImage_generate
+import numpy as np
 from keras.layers import *
 from keras.models import *
 import matplotlib.pyplot as plt
 from PIL import Image
+from sklearn.model_selection import train_test_split
 from tensorflow.keras.optimizers import Adam
 from model_profiler import model_profiler
-import tensorflow as tf
+from sklearn.preprocessing import OneHotEncoder
 from keras_flops import get_flops
 
 
 
-train_segments, train_labels,validation_segments, validation_labels = greyImage_generate.get_tfrecord()
-#由于数据集中各个数据值的差别不大，故不需要进行数据预处理
+#每个样本为（2048，）
+datasets, labels = np.load('./data/database.npy'), np.load('./data/labels.npy')
+#标签集one-hot编码,此时labels为（样本数x4）
+enc = OneHotEncoder()
+enc.fit(labels)
+labels = enc.transform(labels).toarray()
+#数据集划分
+X_train, X_test, y_train, y_test = train_test_split(datasets, labels, test_size=0.2,random_state=0)
 
 #搭建模型
 model = Sequential()
@@ -46,7 +53,7 @@ model.summary()
 adam = Adam(learning_rate=0.0001,beta_1=0.9, beta_2=0.999, epsilon=1e-08,decay=0.0,amsgrad=False)
 model.compile(optimizer=adam,loss='categorical_crossentropy',metrics=['accuracy'])
 
-flops = get_flops(model,batch_size=32)
+flops = get_flops(model,batch_size=16)
 flops = flops/2
 print(f"FLOPS: {flops / 10 ** 9:.03} G")
 
@@ -59,9 +66,9 @@ print(profile)
 '''
 
 
-history = model.fit(train_segments,train_labels,epochs=10,batch_size=32,validation_split=0.2,shuffle=True)
-model.evaluate(validation_segments,validation_labels)
-model.save('grey.h5')
+history = model.fit(X_train,y_train,epochs=50,batch_size=16,validation_split=0.2,shuffle=True)
+model.evaluate(X_test,y_test)
+model.save('1DCNN.h5')
 
 
 #训练过程可视化
@@ -72,7 +79,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(loc='lower right')
-fig.savefig('SVM'+"20000_noise10"+'acc.png')
+fig.savefig('1DCNN_'+'acc.png')
 fig = plt.figure()
 plt.plot(history.history['loss'],label='training loss')
 plt.plot(history.history['val_loss'], label='val loss')
@@ -80,5 +87,5 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(loc='upper right')
-fig.savefig('SVM'+"20000_noise10"+'loss.png')
+fig.savefig('1DCNN_'+'loss.png')
 
