@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import random
 from sklearn.manifold import TSNE
 
-load_model = load_model('grey.h5')
+load_model = load_model('LeNet5.h5')
 model = Model(inputs=load_model.input, outputs=load_model.get_layer('dense_1').output)
 f=open("C:\\Users\\Administrator\\PycharmProjects\\DA\\ead_test.txt")
 all_lines=f.readlines()
